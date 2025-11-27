@@ -1,0 +1,37 @@
+/* simple clean styles */
+:root{
+  --bg:#f5f8fb;
+  --card:#fff;
+  --primary:#2563eb;
+  --danger:#ef4444;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box}
+body{ margin:0; font-family:Inter, system-ui, Arial, sans-serif; background:var(--bg); color:#0f172a; }
+
+.center{ max-width:420px; margin:40px auto; padding:18px; background:var(--card); border-radius:12px; box-shadow:0 8px 30px rgba(2,6,23,0.08); text-align:center;}
+.card{ background:var(--card); padding:12px; border-radius:10px; box-shadow:0 4px 16px rgba(2,6,23,0.04); margin-bottom:12px;}
+.input, input{ width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #e6eef8; font-size:14px; }
+.row{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+button{ padding:10px 14px; border-radius:8px; border:none; background:var(--primary); color:white; cursor:pointer; font-weight:600;}
+button.btn-ghost{ background:transparent; border:1px solid #e6eef8; color:var(--muted); font-weight:600;}
+button.btn-red{ background:var(--danger); }
+.muted{ color:var(--muted); font-size:13px; margin-top:8px; }
+
+.topbar{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px; margin:12px auto; max-width:1160px; background:var(--card); border-radius:10px; box-shadow:0 6px 20px rgba(2,6,23,0.04);}
+.topbar h1{ margin:0; font-size:18px; }
+.top-actions{ display:flex; gap:8px; align-items:center; }
+
+.dashboard{ max-width:1160px; margin:12px auto; padding:0 12px; }
+.grid{ display:flex; gap:12px; flex-wrap:wrap; }
+.grid button{ flex:1 1 160px; }
+
+.panel{ max-width:1160px; margin:12px auto; padding:0 12px; }
+small{ color:var(--muted); }
+
+#booksList p, #studentsList p, #requestsList p, #loansList p, #myRequests p, #myLoansList p{
+  background:#fbfeff; border:1px solid #eef6ff; padding:10px; margin:8px 0; border-radius:6px; text-align:left;
+}
+.badge{ display:inline-block; padding:3px 8px; border-radius:12px; font-size:12px; color:white; margin-left:8px;}
+.badge-available{ background:#10b981; } .badge-borrowed{ background:#ef4444; } .badge-pending{ background:#f59e0b; }
+@media(max-width:720px){ .topbar, .center{ width:92%; margin:12px auto; } .grid button{ flex:1 1 100%; } }

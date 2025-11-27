@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sistem Perpustakaan Sekolah</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="loginBox" class="card center">
+    <h2>Sistem Perpustakaan</h2>
+    <input id="inUser" placeholder="Username (A001 / P001 / S001 ...)" />
+    <input id="inPass" type="password" placeholder="Password" />
+    <div class="row">
+      <button onclick="App.login()">Login</button>
+      <button class="btn-ghost" onclick="App.resetSample()">Reset Sample</button>
+    </div>
+    <p class="muted">Contoh akun: Admin A001/admin1 — Petugas P001/Petugas1 — Siswa S001/Daci1, S002/Daci2</p>
+  </div>
+
+  <!-- APP -->
+  <div id="app" style="display:none;">
+    <div class="topbar">
+      <div>
+        <h1>📚 Perpustakaan Sekolah</h1>
+        <div id="who" class="muted"></div>
+      </div>
+      <div class="top-actions">
+        <button onclick="UI.show('reports')">Laporan</button>
+        <button onclick="App.exportData()">Export</button>
+        <input id="importFile" type="file" style="display:none" onchange="App.importData(event)" />
+        <button onclick="document.getElementById('importFile').click()">Import</button>
+        <button class="btn-red" onclick="App.logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARDS -->
+    <div id="dashAdmin" class="dashboard" style="display:none;">
+      <h2>Dashboard Admin</h2>
+      <div class="grid">
+        <button onclick="UI.show('books')">Kelola Buku</button>
+        <button onclick="UI.show('students')">Kelola Siswa</button>
+        <button onclick="UI.show('requests')">Kelola Pengajuan</button>
+        <button onclick="UI.show('loans')">Pinjaman Aktif</button>
+        <button onclick="UI.show('settings')">Pengaturan</button>
+      </div>
+    </div>
+
+    <div id="dashPetugas" class="dashboard" style="display:none;">
+      <h2>Dashboard Petugas</h2>
+      <div class="grid">
+        <button onclick="UI.show('books')">Kelola Buku</button>
+        <button onclick="UI.show('requests')">Pengajuan Siswa</button>
+        <button onclick="UI.show('loans')">Pinjaman Aktif</button>
+      </div>
+    </div>
+
+    <div id="dashSiswa" class="dashboard" style="display:none;">
+      <h2>Dashboard Siswa</h2>
+      <div class="grid">
+        <button onclick="UI.show('books')">Lihat Buku</button>
+        <button onclick="UI.show('myRequests')">Ajukan Pinjam / Status</button>
+        <button onclick="UI.show('myLoans')">Riwayat Pinjamanku</button>
+      </div>
+    </div>
+
+    <!-- SECTIONS -->
+    <!-- BOOKS -->
+    <section id="sec-books" class="panel" style="display:none;">
+      <h3>Buku</h3>
+      <div id="bookForm" class="card">
+        <h4>Tambah / Edit Buku</h4>
+        <input id="bId" placeholder="(otomatis saat new)" readonly />
+        <input id="bTitle" placeholder="Judul buku" />
+        <input id="bAuthor" placeholder="Penulis" />
+        <input id="bStock" type="number" placeholder="Stok" />
+        <div class="row">
+          <button onclick="App.saveBook()">Simpan</button>
+          <button class="btn-ghost" onclick="UI.clearBookForm()">Bersihkan</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Daftar Buku / Cari</h4>
+        <input id="qBooks" placeholder="Cari ID atau Judul..." oninput="UI.renderBooks()" />
+        <div id="booksList"></div>
+      </div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+    <!-- STUDENTS (admin) -->
+    <section id="sec-students" class="panel" style="display:none;">
+      <h3>Kelola Siswa</h3>
+      <div class="card">
+        <h4>Tambah Siswa</h4>
+        <input id="sId" placeholder="ID (mis. S003)"/>
+        <input id="sName" placeholder="Nama"/>
+        <div class="row">
+          <select id="sGrade">
+            <option value="X">X</option><option value="XI">XI</option><option value="XII">XII</option>
+          </select>
+          <select id="sMajor">
+            <option value="RPL">RPL</option><option value="TKJ">TKJ</option><option value="DKV">DKV</option><option value="OTKP">OTKP</option>
+          </select>
+          <input id="sGroup" placeholder="Rombel (A/B/C)"/>
+        </div>
+        <input id="sPhone" placeholder="No. Telepon"/>
+        <input id="sUser" placeholder="Username (mis. S003)"/>
+        <input id="sPass" placeholder="Password"/>
+        <div class="row">
+          <button onclick="App.addStudent()">Tambah</button>
+          <button class="btn-ghost" onclick="UI.clearStudentForm()">Bersihkan</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Daftar Siswa</h4>
+        <select id="filterClass" onchange="UI.renderStudents()">
+          <option value="">-- Semua Kelas --</option>
+        </select>
+        <div id="studentsList"></div>
+      </div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+    <!-- REQUESTS (admin/petugas) -->
+    <section id="sec-requests" class="panel" style="display:none;">
+      <h3>Pengajuan Pinjam</h3>
+      <div id="requestsList" class="card"></div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+    <!-- STUDENT: My Requests -->
+    <section id="sec-myRequests" class="panel" style="display:none;">
+      <h3>Ajukan Pinjam</h3>
+      <div class="card">
+        <input id="reqBook" placeholder="ID Buku atau ketik judul"/>
+        <input id="reqNote" placeholder="Catatan (opsional)"/>
+        <div class="row">
+          <button onclick="App.submitRequest()">Ajukan</button>
+          <button class="btn-ghost" onclick="UI.back()">Kembali</button>
+        </div>
+      </div>
+      <div class="card">
+        <h4>Pengajuan Saya</h4>
+        <div id="myRequests"></div>
+      </div>
+    </section>
+
+    <!-- LOANS -->
+    <section id="sec-loans" class="panel" style="display:none;">
+      <h3>Pinjaman Aktif</h3>
+      <div id="loansList" class="card"></div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+    <!-- STUDENT: my loans -->
+    <section id="sec-myLoans" class="panel" style="display:none;">
+      <h3>Riwayat Pinjamanku</h3>
+      <div id="myLoansList" class="card"></div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+    <!-- SETTINGS (admin) -->
+    <section id="sec-settings" class="panel" style="display:none;">
+      <h3>Pengaturan Sistem (Admin)</h3>
+      <div class="card">
+        <label>Denda per hari (Rp)</label>
+        <input id="finePerDay" type="number" />
+        <label>Durasi pinjam default (hari)</label>
+        <input id="defaultDays" type="number" />
+        <div class="row">
+          <button onclick="App.saveSettings()">Simpan</button>
+          <button class="btn-ghost" onclick="UI.back()">Kembali</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="sec-reports" class="panel" style="display:none;">
+      <h3>Laporan & Cetak</h3>
+      <div class="card">
+        <label>Filter kelas (opsional)</label>
+        <select id="reportClass">
+          <option value="">-- semua --</option>
+        </select>
+        <div class="row">
+          <button onclick="App.printBooksReport()">Cetak Laporan Buku</button>
+          <button onclick="App.printLoansReport()">Cetak Laporan Pinjaman</button>
+        </div>
+      </div>
+      <button onclick="UI.back()">Kembali</button>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
